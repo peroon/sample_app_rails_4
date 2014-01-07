@@ -1,0 +1,29 @@
+<%= form_for(@voxel) do |f| %>
+  <% if @voxel.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@voxel.errors.count, "error") %> prohibited this voxel from being saved:</h2>
+
+      <ul>
+      <% @voxel.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %><br>
+    <%= f.number_field :user_id %>
+  </div>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :voxeljson %><br>
+    <%= f.text_area :voxeljson %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

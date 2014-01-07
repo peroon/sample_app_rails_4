@@ -1,4 +1,6 @@
 SampleApp::Application.routes.draw do
+  resources :voxels
+
   resources :users do
     member do
       get :following, :followers

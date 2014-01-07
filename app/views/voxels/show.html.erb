@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @voxel.user_id %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @voxel.title %>
+</p>
+
+<p>
+  <strong>Voxeljson:</strong>
+  <%= @voxel.voxeljson %>
+</p>
+
+<%= link_to 'Edit', edit_voxel_path(@voxel) %> |
+<%= link_to 'Back', voxels_path %>
