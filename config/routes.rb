@@ -1,4 +1,7 @@
 SampleApp::Application.routes.draw do
+  get "static_editors/index"
+  get "static_editors/home"
+  get "static_editors/help"
   resources :voxels
 
   resources :users do
