@@ -11,6 +11,9 @@
         margin: 0px;
         overflow: hidden;
       }
+      #canvas-container{
+        border: 10px solid #F00;
+      }
     </style>
   </head>
   <body>
@@ -32,6 +35,7 @@
       function init() {
 
         container = document.createElement( 'div' );
+        var $container = $(container).attr('id', 'canvas-container');
         document.body.appendChild( container );
 
         var info = document.createElement( 'div' );
