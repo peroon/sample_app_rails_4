@@ -1,3 +1,18 @@
-// Place all the styles related to the StaticEditors controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+body {
+  background-color: #f0f0f0;
+  margin: 0px;
+  overflow: hidden;
+}
+#container{
+  border: 1px solid red;
+}
+canvas{
+  border: 1px solid green;
+}
+
+.border-red{
+  border: 1px solid red;
+}
+.border-blue{
+  border: 1px solid blue;
+}

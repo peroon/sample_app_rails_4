@@ -22,8 +22,8 @@ animate();
 
 function init() {
 
-  container = document.createElement( 'div' );
-  var $container = $(container).attr('id', 'canvas-container');
+  container = document.getElementById('container');
+  var $container = $(container);
   document.body.appendChild( container );
 
   //ウィンドウ全体
