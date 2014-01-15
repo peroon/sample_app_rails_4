@@ -24,11 +24,11 @@ function init() {
 
   container = document.getElementById('container');
   var $container = $(container);
-  document.body.appendChild( container );
 
   //ウィンドウ全体
   var W = window.innerWidth;
   var H = window.innerHeight;
+  H = W * (800/1280);
   console.log('innerW,H', W, H);
   camera = new THREE.PerspectiveCamera( 40, W/H, 1, 10000 );
   camera.position.y = 800;
@@ -56,6 +56,7 @@ function onDocumentMouseMove( event ) {
 
   mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  //console.log("mouse X, Y", mouse2D.x, mouse2D.y); //0.3 etc
 
   var intersects = raycaster.intersectObjects( scene.children );
 
@@ -71,13 +72,17 @@ function onDocumentMouseDown( event ) {
   var intersects = raycaster.intersectObjects( scene.children );
 
         if ( intersects.length > 0 ) {
+          //レイとの交差点
           var intersect = intersects[ 0 ];
+          console.log('intersect.point', intersect.point);
           if ( isCtrlDown ) {
+            //remove voxel from scene
             if ( intersect.object != plane ) {
               scene.remove( intersect.object );
             }
           } 
           else {
+            //add voxel to scene
             normalMatrix.getNormalMatrix( intersect.object.matrixWorld );
 
             var normal = intersect.face.normal.clone();

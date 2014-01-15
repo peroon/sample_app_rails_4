@@ -15334,7 +15334,7 @@ THREE.FogExp2.prototype.clone = function () {
 
 THREE.CanvasRenderer = function ( parameters ) {
 
-  console.log( 'THREE.CanvasRenderer', THREE.REVISION );
+  //console.log( 'THREE.CanvasRenderer', THREE.REVISION );
 
   var smoothstep = THREE.Math.smoothstep;
 

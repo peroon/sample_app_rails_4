@@ -1,5 +1,8 @@
 window.MYTHREE = window.MYTHREE || {}
 
+MYTHREE.W = window.innerWidth;
+MYTHREE.H = window.innerHeight;
+
 #グリッド線
 MYTHREE.getGrid = ->
   size = 500
@@ -26,8 +29,11 @@ MYTHREE.getRayHitPlane = ->
 MYTHREE.getRenderer = ->
   renderer = new THREE.CanvasRenderer;
   canvas = {};
-  canvas.W = 600;
-  canvas.H = 400;
+  canvas.W = MYTHREE.W;
+
+  #canvas.H = MYTHREE.H;
+  canvas.H = MYTHREE.W * (800/1280);
+
   renderer.setSize(canvas.W, canvas.H);
   renderer
 

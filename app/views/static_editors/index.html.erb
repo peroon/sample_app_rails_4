@@ -1,42 +1,18 @@
-<!-- not use application.html.erb -->
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <%= stylesheet_link_tag "static_editors", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>static voxel editor</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<body>
+  <%= render 'static_editors/header' %>
 
-    <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
-    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <div id="container">
+  </div>
 
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-  </head>
+  <!-- script -->
+  <%= render 'static_editors/editor_init' %>
 
-  <body>
-    <!-- HTML -->
-    <div id="header">
-      <h1>static voxel editor</h1>
-    </div>
-
-    <a class="btn btn-primary">aaa</a>
-
-    <div class="border-blue">
-      aaa<br>
-      aaa<br>
-      aaa<br>
-      <div class="border-red">
-        bbb
-      </div>
-      aaa<br>
-      aaa<br>
-    </div>
-
-    <div id="container">
-    <a class="btn">aaa</a>
-    </div>
-    <!-- script -->
-    <%= render 'static_editors/editor_init' %>
-
-  </body>
-</html>
+  <%= render 'static_editors/footer' %>
+</body>

@@ -1,7 +1,7 @@
 body {
   background-color: #f0f0f0;
-  margin: 0px;
-  overflow: hidden;
+  //margin: 0px;
+  //overflow: hidden;
 }
 #container{
   border: 1px solid red;
@@ -15,4 +15,14 @@ canvas{
 }
 .border-blue{
   border: 1px solid blue;
+}
+.border-green{
+  border: 1px solid green;
+}
+
+#colorchart{
+  width: 1280;
+  height: 400;
+  margin-right: auto;
+  margin-left: auto;
 }
