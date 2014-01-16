@@ -30,6 +30,8 @@ function init() {
   var H = window.innerHeight;
   H = W * (800/1280);
   console.log('innerW,H', W, H);
+  MYTHREE.global.W = W;
+  MYTHREE.global.H = H;
   camera = new THREE.PerspectiveCamera( 40, W/H, 1, 10000 );
   camera.position.y = 800;
   scene = new THREE.Scene();
@@ -54,9 +56,14 @@ function init() {
 function onDocumentMouseMove( event ) {
   event.preventDefault();
 
-  mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-  mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-  //console.log("mouse X, Y", mouse2D.x, mouse2D.y); //0.3 etc
+  // mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+  // mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  var offsetY = $("#header").height();
+  var canvasX = event.clientX;
+  var canvasY = event.clientY + offsetY;
+  mouse2D.x = ( canvasX / MYTHREE.global.W ) * 2 - 1;
+  mouse2D.y = - ( canvasY / MYTHREE.global.W ) * 2 + 1;
+  //console.log("mouse X, Y", mouse2D.x, mouse2D.y); //-1.0 ~ 1.0 
 
   var intersects = raycaster.intersectObjects( scene.children );
 

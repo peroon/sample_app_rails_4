@@ -45,3 +45,5 @@ MYTHREE.getDirectionalLight = ->
   canvas.H = 400;
   renderer.setSize(canvas.W, canvas.H)
   renderer
+
+MYTHREE.global = {}
