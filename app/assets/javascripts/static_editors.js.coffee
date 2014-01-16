@@ -47,3 +47,141 @@ MYTHREE.getDirectionalLight = ->
   renderer
 
 MYTHREE.global = {}
+MYTHREE.global.voxels = {};
+
+
+
+
+
+
+
+
+
+#---組み立て---
+$ ->
+  container = null
+  camera = null
+  scene = null
+  renderer = null
+  projector = null
+  plane = null
+  mouse2D = null
+  mouse3D = null
+  raycaster = null
+  theta = 45
+  isShiftDown = false
+  isCtrlDown = false
+  target = new THREE.Vector3( 0, 200, 0 )
+  normalMatrix = new THREE.Matrix3()
+  ROLLOVERED = null
+  
+  
+  init = -> 
+    container = document.getElementById('container')
+    $container = $(container)
+    #ウィンドウ全体
+    W = window.innerWidth
+    H = window.innerHeight
+    H = W * (800/1280)
+    console.log('innerW,H', W, H)
+    MYTHREE.global.W = W
+    MYTHREE.global.H = H
+    camera = new THREE.PerspectiveCamera( 40, W/H, 1, 10000 )
+    camera.position.y = 800
+    scene = new THREE.Scene()
+    scene.add( MYTHREE.getGrid() )
+    projector = new THREE.Projector()
+    scene.add( MYTHREE.getRayHitPlane() )
+    mouse2D = new THREE.Vector3( 0, 10000, 0.5 )
+    scene.add( new THREE.AmbientLight( 0x606060 ))
+    scene.add( MYTHREE.getDirectionalLight() )
+    renderer = new MYTHREE.getRenderer()
+    container.appendChild(renderer.domElement); #<canvas>
+    $('canvas').attr('id', 'canvas_id')
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false )
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false )
+    document.addEventListener( 'keydown', onDocumentKeyDown, false )
+    document.addEventListener( 'keyup', onDocumentKeyUp, false )
+
+
+
+  onDocumentMouseMove = ( event ) ->
+    event.preventDefault()
+    #mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1
+    #mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1
+    offsetY = $("#header").height()
+    canvasX = event.clientX
+    canvasY = event.clientY + offsetY
+    mouse2D.x = ( canvasX / MYTHREE.global.W ) * 2 - 1
+    mouse2D.y = - ( canvasY / MYTHREE.global.W ) * 2 + 1
+    #console.log("mouse X, Y", mouse2D.x, mouse2D.y); #-1.0 ~ 1.0 
+    intersects = raycaster.intersectObjects( scene.children )
+    if intersects.length > 0
+      if ( ROLLOVERED ) 
+        ROLLOVERED.color.setHex( 0x00ff80 );
+      ROLLOVERED = intersects[ 0 ].face;
+      ROLLOVERED.color.setHex( 0xff8000 )
+    
+
+  onDocumentMouseDown = (event) ->
+    event.preventDefault()
+    intersects = raycaster.intersectObjects(scene.children)
+    if intersects.length > 0
+      
+      #レイとの交差点
+      intersect = intersects[0]
+      console.log "intersect.point", intersect.point
+      if isCtrlDown
+        
+        #remove voxel from scene
+        scene.remove intersect.object  unless intersect.object is plane
+      else
+        
+        #add voxel to scene
+        normalMatrix.getNormalMatrix intersect.object.matrixWorld
+        normal = intersect.face.normal.clone()
+        normal.applyMatrix3(normalMatrix).normalize()
+        position = new THREE.Vector3().addVectors(intersect.point, normal)
+        geometry = new THREE.CubeGeometry(50, 50, 50)
+        i = 0
+
+        while i < geometry.faces.length
+          geometry.faces[i].color.setHex 0x00ff80
+          i++
+        material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
+        voxel = new THREE.Mesh(geometry, material)
+        voxel.position.x = Math.floor(position.x / 50) * 50 + 25
+        voxel.position.y = Math.floor(position.y / 50) * 50 + 25
+        voxel.position.z = Math.floor(position.z / 50) * 50 + 25
+        voxel.matrixAutoUpdate = false
+        voxel.updateMatrix()
+        scene.add voxel
+  onDocumentKeyDown = (event) ->
+    switch event.keyCode
+      when 16
+        isShiftDown = true
+      when 17
+        isCtrlDown = true
+  onDocumentKeyUp = (event) ->
+    switch event.keyCode
+      when 16
+        isShiftDown = false
+      when 17
+        isCtrlDown = false
+  save = ->
+    window.open renderer.domElement.toDataURL("image/png"), "mywindow"
+    false
+  animate = ->
+    requestAnimationFrame animate
+    render()
+  render = ->
+    theta += mouse2D.x * 3  if isShiftDown
+    camera.position.x = 1400 * Math.sin(theta * Math.PI / 360)
+    camera.position.z = 1400 * Math.cos(theta * Math.PI / 360)
+    camera.lookAt target
+    raycaster = projector.pickingRay(mouse2D.clone(), camera)
+    renderer.render scene, camera
+
+  #main
+  init()
+  animate()
