@@ -1,11 +1,11 @@
-<h1>Listing voxels</h1>
+<h1>作品一覧</h1>
 
 <table>
   <thead>
     <tr>
-      <th>User</th>
-      <th>Title</th>
-      <th>Voxeljson</th>
+      <th>ユーザ名(User)</th>
+      <th>タイトル(Title)</th>
+      <th>データ(Voxeljson)</th>
       <th></th>
       <th></th>
       <th></th>
@@ -18,14 +18,14 @@
         <td><%= voxel.user_id %></td>
         <td><%= voxel.title %></td>
         <td><%= voxel.voxeljson %></td>
-        <td><%= link_to 'Show', voxel %></td>
-        <td><%= link_to 'Edit', edit_voxel_path(voxel) %></td>
-        <td><%= link_to 'Destroy', voxel, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to '表示', voxel %></td>
+        <td><%= link_to '編集', edit_voxel_path(voxel) %></td>
+        <td><%= link_to '削除', voxel, method: :delete, data: { confirm: 'Really?' } %></td>
       </tr>
     <% end %>
   </tbody>
+  
 </table>
 
 <br>
-
-<%= link_to 'New Voxel', new_voxel_path %>
+<%= link_to '新規作成', new_voxel_path, :class=>'btn btn-warning' %>

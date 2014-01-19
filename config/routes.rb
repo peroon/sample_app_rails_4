@@ -1,4 +1,7 @@
 SampleApp::Application.routes.draw do
+  #root to: 'static_pages#home'
+  root to: 'voxels#index'
+
   get "static_editors/index"
   get "static_editors/home"
   get "static_editors/help"
@@ -12,7 +15,7 @@ SampleApp::Application.routes.draw do
   resources :sessions,      only: [:new, :create, :destroy]
   resources :microposts,    only: [:create, :destroy]
   resources :relationships, only: [:create, :destroy]
-  root to: 'static_pages#home'
+
   match '/signup',  to: 'users#new',            via: 'get'
   match '/signin',  to: 'sessions#new',         via: 'get'
   match '/signout', to: 'sessions#destroy',     via: 'delete'

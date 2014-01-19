@@ -1,5 +1,20 @@
-<h1>New voxel</h1>
+<%= render 'static_editors/header' %>
+<div id="container">
+</div>
+<%= render 'static_editors/footer' %>
 
+<% 100.times do %>
+  <br>
+<% end %> 
+
+<a name="submitform"></a>
+.<br>
+.<br>
+.<br>
 <%= render 'form' %>
 
-<%= link_to 'Back', voxels_path %>
+<a onclick="$('body').scrollTop(0)" class="btn btn-primary">エディタに戻る</a>
+
+<% 100.times do %>
+  <br>
+<% end %> 

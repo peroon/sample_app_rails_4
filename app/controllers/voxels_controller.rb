@@ -28,7 +28,8 @@ class VoxelsController < ApplicationController
 
     respond_to do |format|
       if @voxel.save
-        format.html { redirect_to @voxel, notice: 'Voxel was successfully created.' }
+        flash[:notice] = '作成されました！'
+        format.html { redirect_to action: 'index' }
         format.json { render action: 'show', status: :created, location: @voxel }
       else
         format.html { render action: 'new' }
@@ -42,7 +43,7 @@ class VoxelsController < ApplicationController
   def update
     respond_to do |format|
       if @voxel.update(voxel_params)
-        format.html { redirect_to @voxel, notice: 'Voxel was successfully updated.' }
+        format.html { redirect_to @voxel, notice: '更新されました！' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }

@@ -106,7 +106,8 @@ $ ->
 
   onDocumentMouseMove = ( event ) ->
     event.preventDefault()
-    offsetY = $("#header").height()
+    #マウス位置補正
+    offsetY = $("#header").height() + $("header").height() 
     #ブラウザの左上からのピクセル位置 = event.clientX,Y
     canvasX = event.clientX
     canvasY = event.clientY - offsetY
@@ -123,6 +124,13 @@ $ ->
     for intersect in intersects
       if intersect.face?
         return intersect
+
+  #フォームにデータコピー
+  writeToForm = ->
+    console.log("writeToForm")
+    $('#voxel_user_id').val(1)
+    $('#voxel_title').val('dummy title')
+    $('#voxel_voxeljson').text('dummy json')
 
   resetVoxelAll = ->
     scene.remove(voxelBase)
@@ -165,6 +173,7 @@ $ ->
         #draw to scene
         voxel = MYTHREE.createCube(voxelPos, '')
         scene.add voxel
+        writeToForm()
 
   onDocumentKeyDown = (event) ->
     switch event.keyCode

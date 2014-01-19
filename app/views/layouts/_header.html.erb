@@ -1,11 +1,14 @@
 <header class="navbar navbar-fixed-top navbar-inverse">
   <div class="navbar-inner">
     <div class="container">
-      <%= link_to "sample app", root_path, id: "logo" %>
+      
+      <%#= image_tag 'cube.png', :size=>"24x24" %>
+      <%= link_to "voxel editor", root_path, id: "logo" %>
+
       <nav>
         <ul class="nav pull-right">
-          <li><%= link_to "Home", root_path %></li>
-          <li><%= link_to "Help", help_path %></li>
+          <li><%= link_to "ヘルプ", help_path %></li>
+
           <% if signed_in? %>
             <li><%= link_to "Users", users_path %></li>
             <li id="fat-menu" class="dropdown">
@@ -22,8 +25,10 @@
               </ul>
             </li>
           <% else %>
-            <li><%= link_to "Sign in", signin_path %></li>
+            <li><%= link_to "ログイン", signin_path %></li>
+            <li><%= link_to "新規登録", signup_path %></li>
           <% end %>
+
         </ul>
       </nav>
     </div>
