@@ -106,8 +106,6 @@ $ ->
     document.addEventListener( 'keydown', onDocumentKeyDown, false )
     document.addEventListener( 'keyup', onDocumentKeyUp, false )
 
-
-
   onDocumentMouseMove = ( event ) ->
     event.preventDefault()
     #mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1
@@ -124,16 +122,19 @@ $ ->
         ROLLOVERED.color.setHex( 0x00ff80 );
       ROLLOVERED = intersects[ 0 ].face;
       ROLLOVERED.color.setHex( 0xff8000 )
-    
+  
+  #複数の交差点からfaceがセットされているものを返す
+  getFacedIntersect = (intersects) ->
+    for intersect in intersects
+      if intersect.face?
+        return intersect
 
   onDocumentMouseDown = (event) ->
     event.preventDefault()
     intersects = raycaster.intersectObjects(scene.children)
-    console.log  'intersects.length',intersects.length
     if intersects.length > 0
       #レイとの交差点
-      intersect = intersects[0]
-      console.log "intersect.point", intersect.point
+      intersect = getFacedIntersect(intersects)
       if isCtrlDown
         #remove voxel from scene
         scene.remove intersect.object  unless intersect.object is plane
@@ -153,6 +154,10 @@ $ ->
         voxel.position.x = Math.floor(position.x / 1) * 1 + 0.5
         voxel.position.y = Math.floor(position.y / 1) * 1 + 0.5
         voxel.position.z = Math.floor(position.z / 1) * 1 + 0.5
+
+        voxel.position.x = 0
+        voxel.position.y = 0
+        voxel.position.z = 0
         console.log 'voxel.position', voxel.position
         voxel.matrixAutoUpdate = false
         voxel.updateMatrix()
@@ -164,18 +169,22 @@ $ ->
         isShiftDown = true
       when 17
         isCtrlDown = true
+
   onDocumentKeyUp = (event) ->
     switch event.keyCode
       when 16
         isShiftDown = false
       when 17
         isCtrlDown = false
+
   save = ->
     window.open renderer.domElement.toDataURL("image/png"), "mywindow"
     false
+
   animate = ->
     requestAnimationFrame animate
     render()
+
   render = ->
     theta += mouse2D.x * 3  if isShiftDown
     camera.position.x = 28 * Math.sin(theta * Math.PI / 360)
