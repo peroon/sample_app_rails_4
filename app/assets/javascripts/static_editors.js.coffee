@@ -40,15 +40,13 @@ MYTHREE.getDirectionalLight = ->
   light = new THREE.DirectionalLight( 0xffffff, 3 ); 
   light
 
-MYTHREE.global = {}
-MYTHREE.global.voxels = {};
-
-
-
-
-
-
-
+MYTHREE.getCubeGeometry = ->
+  geometry = new THREE.CubeGeometry(1,1,1)
+  i = 0
+  while i < geometry.faces.length
+    geometry.faces[i].color.setHex 0x00ff80
+    i++
+  geometry
 
 
 #---組み立て---
@@ -65,7 +63,7 @@ $ ->
   theta = 45
   isShiftDown = false
   isCtrlDown = false
-  target = new THREE.Vector3( 0, 4, 0 )
+  origin = new THREE.Vector3( 0, 0, 0 )
   normalMatrix = new THREE.Matrix3()
   ROLLOVERED = null
   
@@ -82,9 +80,8 @@ $ ->
     mouse2D = new THREE.Vector3( 0, 10000, 0.5 )
     scene.add( new THREE.AmbientLight( 0x606060 ))
     scene.add( MYTHREE.getDirectionalLight() )
-    #axis
-    axisHelper = new THREE.AxisHelper(10);
-    scene.add(axisHelper);
+    axis = new THREE.AxisHelper(10);
+    scene.add(axis);
     renderer = new MYTHREE.getRenderer()
     container.appendChild(renderer.domElement); #<canvas>
     $('canvas').attr('id', 'canvas_id')
@@ -95,20 +92,17 @@ $ ->
 
   onDocumentMouseMove = ( event ) ->
     event.preventDefault()
-    #mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1
-    #mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1
     offsetY = $("#header").height()
+    #ブラウザの左上からのピクセル位置 = event.clientX,Y
     canvasX = event.clientX
-    canvasY = event.clientY + offsetY
-    mouse2D.x = ( canvasX / MYTHREE.const.W ) * 2 - 1
-    mouse2D.y = - ( canvasY / MYTHREE.const.W ) * 2 + 1
-    #console.log("mouse X, Y", mouse2D.x, mouse2D.y); #-1.0 ~ 1.0 
+    canvasY = event.clientY - offsetY
+    mouse2D.x = ( canvasX / MYTHREE.const.W ) * 2 - 1 #-1~+1
+    mouse2D.y = - ( canvasY / MYTHREE.const.H ) * 2 + 1 #-1~+1
     intersects = raycaster.intersectObjects( scene.children )
-    if intersects.length > 0
-      if ( ROLLOVERED ) 
-        ROLLOVERED.color.setHex( 0x00ff80 );
-      ROLLOVERED = intersects[ 0 ].face;
-      ROLLOVERED.color.setHex( 0xff8000 )
+    #ray hit color
+    # if intersects.length > 0
+    #   ROLLOVERED = getColoredIntersect(intersects)
+    #   ROLLOVERED.color.setHex( 0xff8000 )
   
   #複数の交差点からfaceがセットされているものを返す
   getFacedIntersect = (intersects) ->
@@ -126,26 +120,17 @@ $ ->
         #remove voxel from scene
         scene.remove intersect.object  unless intersect.object is plane
       else
-        #add voxel to scene
+        #draw cube
         normalMatrix.getNormalMatrix intersect.object.matrixWorld
         normal = intersect.face.normal.clone()
         normal.applyMatrix3(normalMatrix).normalize()
         position = new THREE.Vector3().addVectors(intersect.point, normal)
-        geometry = new THREE.CubeGeometry(1,1,1)
-        i = 0
-        while i < geometry.faces.length
-          geometry.faces[i].color.setHex 0x00ff80
-          i++
+        geometry = MYTHREE.getCubeGeometry()
         material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
         voxel = new THREE.Mesh(geometry, material)
-        voxel.position.x = Math.floor(position.x / 1) * 1 + 0.5
-        voxel.position.y = Math.floor(position.y / 1) * 1 + 0.5
-        voxel.position.z = Math.floor(position.z / 1) * 1 + 0.5
-
-        voxel.position.x = 0
-        voxel.position.y = 0
-        voxel.position.z = 0
-        console.log 'voxel.position', voxel.position
+        voxel.position.x = Math.floor(position.x) + 0.5
+        voxel.position.y = Math.floor(position.y) + 0.5
+        voxel.position.z = Math.floor(position.z) + 0.5
         voxel.matrixAutoUpdate = false
         voxel.updateMatrix()
         scene.add voxel
@@ -176,8 +161,8 @@ $ ->
     theta += mouse2D.x * 3  if isShiftDown
     camera.position.x = 28 * Math.sin(theta * Math.PI / 360)
     camera.position.z = 28 * Math.cos(theta * Math.PI / 360)
-    camera.lookAt target
-    raycaster = projector.pickingRay(mouse2D.clone(), camera)
+    camera.lookAt origin
+    raycaster = projector.pickingRay(mouse2D.clone(), camera) #ray from 2D to 3D
     renderer.render scene, camera
 
   #main
