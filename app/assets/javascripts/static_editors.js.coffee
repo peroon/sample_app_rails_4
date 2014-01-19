@@ -1,7 +1,11 @@
 window.MYTHREE = window.MYTHREE || {}
 
-MYTHREE.W = window.innerWidth;
-MYTHREE.H = window.innerHeight;
+#定数
+MYTHREE.const = {}
+MYTHREE.const.W = window.innerWidth;
+MYTHREE.const.H = MYTHREE.const.W * (800/1280);
+
+#---ヘルパー---
 
 #グリッド線
 MYTHREE.getGrid = ->
@@ -28,23 +32,13 @@ MYTHREE.getRayHitPlane = ->
 #レンダラー
 MYTHREE.getRenderer = ->
   renderer = new THREE.CanvasRenderer;
-  canvas = {};
-  canvas.W = MYTHREE.W;
-
-  #canvas.H = MYTHREE.H;
-  canvas.H = MYTHREE.W * (800/1280);
-
-  renderer.setSize(canvas.W, canvas.H);
+  renderer.setSize(MYTHREE.const.W, MYTHREE.const.H)
   renderer
 
 #平行光源
 MYTHREE.getDirectionalLight = ->
-  renderer = new THREE.CanvasRenderer
-  canvas = {};
-  canvas.W = 600;
-  canvas.H = 400;
-  renderer.setSize(canvas.W, canvas.H)
-  renderer
+  light = new THREE.DirectionalLight( 0xffffff, 3 ); 
+  light
 
 MYTHREE.global = {}
 MYTHREE.global.voxels = {};
@@ -79,16 +73,9 @@ $ ->
   init = -> 
     container = document.getElementById('container')
     $container = $(container)
-    #ウィンドウ全体
-    W = window.innerWidth
-    H = window.innerHeight
-    H = W * (800/1280)
-    console.log('innerW,H', W, H)
-    MYTHREE.global.W = W
-    MYTHREE.global.H = H
-    camera = new THREE.PerspectiveCamera( 4, W/H, 1, 10000 )
-    camera.position.y = 400
-    scene = new THREE.Scene()
+    camera = new THREE.PerspectiveCamera( 40, MYTHREE.const.W/MYTHREE.const.H, 1, 10000 )
+    camera.position.y = 30
+    scene = new THREE.Scene
     scene.add( MYTHREE.getGrid() )
     projector = new THREE.Projector()
     scene.add( MYTHREE.getRayHitPlane() )
@@ -113,8 +100,8 @@ $ ->
     offsetY = $("#header").height()
     canvasX = event.clientX
     canvasY = event.clientY + offsetY
-    mouse2D.x = ( canvasX / MYTHREE.global.W ) * 2 - 1
-    mouse2D.y = - ( canvasY / MYTHREE.global.W ) * 2 + 1
+    mouse2D.x = ( canvasX / MYTHREE.const.W ) * 2 - 1
+    mouse2D.y = - ( canvasY / MYTHREE.const.W ) * 2 + 1
     #console.log("mouse X, Y", mouse2D.x, mouse2D.y); #-1.0 ~ 1.0 
     intersects = raycaster.intersectObjects( scene.children )
     if intersects.length > 0
