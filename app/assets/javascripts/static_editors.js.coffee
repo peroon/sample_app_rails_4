@@ -40,6 +40,18 @@ MYTHREE.getDirectionalLight = ->
   light = new THREE.DirectionalLight( 0xffffff, 3 ); 
   light
 
+#cube
+MYTHREE.createCube = (pos, color) ->
+  geometry = MYTHREE.getCubeGeometry()
+  material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
+  voxel = new THREE.Mesh(geometry, material)
+  voxel.position.x = pos.x
+  voxel.position.y = pos.y
+  voxel.position.z = pos.z
+  voxel.matrixAutoUpdate = false
+  voxel.updateMatrix()
+  voxel
+
 MYTHREE.getCubeGeometry = ->
   geometry = new THREE.CubeGeometry(1,1,1)
   i = 0
@@ -66,7 +78,8 @@ $ ->
   origin = new THREE.Vector3( 0, 0, 0 )
   normalMatrix = new THREE.Matrix3()
   ROLLOVERED = null
-  
+  voxelBase = new THREE.Object3D()
+  voxelData = {};
   
   init = -> 
     container = document.getElementById('container')
@@ -82,6 +95,7 @@ $ ->
     scene.add( MYTHREE.getDirectionalLight() )
     axis = new THREE.AxisHelper(10);
     scene.add(axis);
+    scene.add(voxelBase)
     renderer = new MYTHREE.getRenderer()
     container.appendChild(renderer.domElement); #<canvas>
     $('canvas').attr('id', 'canvas_id')
@@ -110,6 +124,19 @@ $ ->
       if intersect.face?
         return intersect
 
+  resetVoxelAll = ->
+    scene.remove(voxelBase)
+    voxelBase = new THREE.Object3D()
+    scene.add voxelBase
+
+  redrawVoxelAll = ->
+    for key of voxelData
+      color = voxelData[key]
+      pos = JSON.parse(key)
+      #voxel
+      voxel = MYTHREE.createCube(pos, color)
+      voxelBase.add voxel
+
   onDocumentMouseDown = (event) ->
     event.preventDefault()
     intersects = raycaster.intersectObjects(scene.children)
@@ -118,21 +145,25 @@ $ ->
       intersect = getFacedIntersect(intersects)
       if isCtrlDown
         #remove voxel from scene
-        scene.remove intersect.object  unless intersect.object is plane
+        scene.remove intersect.object unless intersect.object is plane
       else
-        #draw cube
+        #交差点から描画位置決定
         normalMatrix.getNormalMatrix intersect.object.matrixWorld
         normal = intersect.face.normal.clone()
         normal.applyMatrix3(normalMatrix).normalize()
         position = new THREE.Vector3().addVectors(intersect.point, normal)
-        geometry = MYTHREE.getCubeGeometry()
-        material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
-        voxel = new THREE.Mesh(geometry, material)
-        voxel.position.x = Math.floor(position.x) + 0.5
-        voxel.position.y = Math.floor(position.y) + 0.5
-        voxel.position.z = Math.floor(position.z) + 0.5
-        voxel.matrixAutoUpdate = false
-        voxel.updateMatrix()
+        voxelPos = {}
+        voxelPos.x = Math.floor(position.x) + 0.5
+        voxelPos.y = Math.floor(position.y) + 0.5
+        voxelPos.z = Math.floor(position.z) + 0.5
+        #save 
+        pos = JSON.stringify(voxelPos)
+        color = THREE.FaceColors
+        voxelData[pos] = color
+        #resetVoxelAll()
+        #redrawVoxelAll()
+        #draw to scene
+        voxel = MYTHREE.createCube(voxelPos, '')
         scene.add voxel
 
   onDocumentKeyDown = (event) ->
