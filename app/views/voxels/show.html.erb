@@ -1,5 +1,4 @@
-<div id="container">
-</div>
+<%= render 'voxels/container' %>
 
 <p>
   <strong>User:</strong>
@@ -13,5 +12,7 @@
 
 <p>
   <strong>Voxeljson:</strong>
-  <%= @voxel.voxeljson %>
+  <div id="voxeljson_text">
+    <%= @voxel.voxeljson %>
+  </div>
 </p>

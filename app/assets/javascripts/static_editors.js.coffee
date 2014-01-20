@@ -103,6 +103,11 @@ $ ->
     document.addEventListener( 'mousedown', onDocumentMouseDown, false )
     document.addEventListener( 'keydown', onDocumentKeyDown, false )
     document.addEventListener( 'keyup', onDocumentKeyUp, false )
+    console.log $("#method").text()
+    console.log $("#method").text()
+    console.log $("#method").text()
+    if($("#method").text()=="show")
+      initShow()
 
   onDocumentMouseMove = ( event ) ->
     event.preventDefault()
@@ -125,12 +130,16 @@ $ ->
       if intersect.face?
         return intersect
 
+  initShow = ->
+    voxelData = JSON.parse($("#voxeljson_text").text())
+    redrawVoxelAll()
+
   #フォームにデータコピー
   writeToForm = ->
     console.log("writeToForm")
     $('#voxel_user_id').val(1)
     $('#voxel_title').val('dummy title')
-    $('#voxel_voxeljson').text('dummy json')
+    $('#voxel_voxeljson').text( JSON.stringify(voxelData) )
 
   resetVoxelAll = ->
     scene.remove(voxelBase)

@@ -10,6 +10,7 @@ class VoxelsController < ApplicationController
   # GET /voxels/1
   # GET /voxels/1.json
   def show
+    @method = 'show'
   end
 
   # GET /voxels/new
@@ -24,6 +25,7 @@ class VoxelsController < ApplicationController
   # POST /voxels
   # POST /voxels.json
   def create
+    @method = 'create'
     @voxel = Voxel.new(voxel_params)
 
     respond_to do |format|
