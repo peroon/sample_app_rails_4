@@ -15,5 +15,14 @@
 
     <hr>
     <p><%= link_to "新規登録", signup_path %></p>
+
+    <a class="btn" onclick="fill_form()">ゲストとしてログインする</a>
   </div>
 </div>
+
+<script>
+function fill_form(){
+  $("#session_email").val("guest@guest.com");
+  $("#session_password").val("guest");
+}
+</script>
