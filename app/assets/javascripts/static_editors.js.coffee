@@ -105,7 +105,6 @@ $ ->
     document.addEventListener( 'keyup', onDocumentKeyUp, false )
     console.log $("#method").text()
     console.log $("#method").text()
-    console.log $("#method").text()
     if($("#method").text()=="show")
       initShow()
 
