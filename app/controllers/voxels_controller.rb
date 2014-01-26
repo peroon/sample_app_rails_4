@@ -10,6 +10,7 @@ class VoxelsController < ApplicationController
   # GET /voxels/1
   # GET /voxels/1.json
   def show
+    @auto_rotate = true
     @method = 'show'
   end
 

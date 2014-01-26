@@ -44,7 +44,9 @@ MYTHREE.getDirectionalLight = ->
 MYTHREE.createCube = (pos, color) ->
   geometry = MYTHREE.getCubeGeometry()
   material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
-  voxel = new THREE.Mesh(geometry, material)
+  material_edge = new THREE.MeshBasicMaterial( { color: 0x222222, wireframe: true} )
+  #voxel = new THREE.Mesh(geometry, material)
+  voxel = new THREE.SceneUtils.createMultiMaterialObject( geometry, [material, material_edge])
   voxel.position.x = pos.x
   voxel.position.y = pos.y
   voxel.position.z = pos.z
@@ -96,7 +98,7 @@ $ ->
     projector = new THREE.Projector()
     scene.add( MYTHREE.getRayHitPlane() )
     mouse2D = new THREE.Vector3( 0, 10000, 0.5 )
-    scene.add( new THREE.AmbientLight( 0x606060 ))
+    scene.add( new THREE.AmbientLight( 0x808080 ))
     scene.add( MYTHREE.getDirectionalLight() )
     axis = new THREE.AxisHelper(10);
     scene.add(axis);
