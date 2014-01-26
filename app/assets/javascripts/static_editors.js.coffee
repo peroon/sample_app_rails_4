@@ -98,13 +98,13 @@ $ ->
     scene.add(voxelBase)
     renderer = new MYTHREE.getRenderer()
     container.appendChild(renderer.domElement); #<canvas>
-    $('canvas').attr('id', 'canvas_id')
+    $canvas = $('canvas')
+    $canvas.attr('id', 'canvas_id')
     document.addEventListener( 'mousemove', onDocumentMouseMove, false )
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false )
+    #document.addEventListener( 'mousedown', onDocumentMouseDown, true) #マウスクリック
+    $canvas.click(onDocumentMouseDown)
     document.addEventListener( 'keydown', onDocumentKeyDown, false )
     document.addEventListener( 'keyup', onDocumentKeyUp, false )
-    console.log $("#method").text()
-    console.log $("#method").text()
     if($("#method").text()=="show")
       initShow()
 
