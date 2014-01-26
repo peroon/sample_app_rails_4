@@ -1,8 +1,16 @@
 <br>
-<h1>作品一覧</h1>
-
+<br>
 <div class="container">
 
+<%# UI %>
+<%= link_to '新規作成', new_voxel_path, :class=>'btn btn-warning col-lg-2' %><br><br>
+<%= link_to '作品をシャッフル表示', 'random', :class=>'btn btn-success col-lg-2' %><br><br>
+<%= link_to 'モデルを利用したゲーム', '#', :class=>'btn btn-primary col-lg-2' %><br><br>
+
+<h1>作品一覧</h1>
+<br>
+
+<%# リスト%>
 <table style="align:center;">
   <thead>
     <tr>
@@ -33,14 +41,5 @@
   </tbody>
   
 </table>
-
-<br>
-<%= link_to '新規作成', new_voxel_path, :class=>'btn btn-warning' %>
-<br>
-<br>
-<%= link_to '作品をシャッフル表示', 'random', :class=>'btn btn-success' %>
-<br>
-<br>
-<%= link_to 'モデルを利用したゲーム', 'game', :class=>'btn btn-primary' %>
 
 </div>

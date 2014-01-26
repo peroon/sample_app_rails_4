@@ -72,11 +72,14 @@ $ ->
   projector = null
   plane = null
   mouse2D = null
+  oldmouse2D = null
   mouse3D = null
   raycaster = null
-  theta = 45
+  phi = 170
+  theta = 70
   isShiftDown = false
   isCtrlDown = false
+  isRightClickDown = false
   origin = new THREE.Vector3( 0, 0, 0 )
   normalMatrix = new THREE.Matrix3()
   ROLLOVERED = null
@@ -98,6 +101,7 @@ $ ->
     projector = new THREE.Projector()
     scene.add( MYTHREE.getRayHitPlane() )
     mouse2D = new THREE.Vector3( 0, 10000, 0.5 )
+    oldmouse2D = new THREE.Vector3( 0, 10000, 0.5 )
     scene.add( new THREE.AmbientLight( 0x808080 ))
     scene.add( MYTHREE.getDirectionalLight() )
     axis = new THREE.AxisHelper(10);
@@ -110,6 +114,19 @@ $ ->
     document.addEventListener( 'mousemove', onDocumentMouseMove, false )
     #document.addEventListener( 'mousedown', onDocumentMouseDown, true) #マウスクリック
     $canvas.click(onDocumentMouseDown)
+
+    #disable right click
+    $canvas.bind "contextmenu", (e) ->
+      false
+    $canvas.mousedown (e) ->
+      if e.button is 2
+        isRightClickDown = true
+      true
+    $canvas.mouseup (e) ->
+      if e.button is 2
+        isRightClickDown = false
+      true
+
     document.addEventListener( 'keydown', onDocumentKeyDown, false )
     document.addEventListener( 'keyup', onDocumentKeyUp, false )
     if($("#method").text()=="show")
@@ -126,9 +143,17 @@ $ ->
     mouse2D.y = - ( canvasY / MYTHREE.const.H ) * 2 + 1 #-1~+1
     intersects = raycaster.intersectObjects( scene.children )
     #ray hit color
-    # if intersects.length > 0
-    #   ROLLOVERED = getColoredIntersect(intersects)
-    #   ROLLOVERED.color.setHex( 0xff8000 )
+    #if intersects.length > 0
+    #  ROLLOVERED = getColoredIntersect(intersects)
+    #  ROLLOVERED.color.setHex( 0xff8000 )
+    #右クリック&ドラッグで回転
+    if isRightClickDown
+      diffX = (oldmouse2D.x - mouse2D.x) * 200 * -1
+      phi += diffX
+      diffY = (oldmouse2D.y - mouse2D.y) * 200 * -1
+      theta += diffY
+    oldmouse2D.x = mouse2D.x
+    oldmouse2D.y = mouse2D.y
   
   #複数の交差点からfaceがセットされているものを返す
   getFacedIntersect = (intersects) ->
@@ -142,7 +167,6 @@ $ ->
 
   #フォームにデータコピー
   writeToForm = ->
-    console.log("writeToForm")
     $('#voxel_user_id').val(1)
     $('#voxel_title').val('ここに作品名を入れてほしいな ^^/')
     $('#voxel_voxeljson').text( JSON.stringify(voxelData) )
@@ -183,8 +207,6 @@ $ ->
         pos = JSON.stringify(voxelPos)
         color = THREE.FaceColors
         voxelData[pos] = color
-        #resetVoxelAll()
-        #redrawVoxelAll()
         #draw to scene
         voxel = MYTHREE.createCube(voxelPos, '')
         scene.add voxel
@@ -213,11 +235,13 @@ $ ->
     render()
 
   render = ->
-    theta += mouse2D.x * 3  if isShiftDown
+    phi += mouse2D.x * 3  if isShiftDown
     if auto_rotate
-      theta += 1
-    camera.position.x = 28 * Math.sin(theta * Math.PI / 360)
-    camera.position.z = 28 * Math.cos(theta * Math.PI / 360)
+      phi += 1
+    R = 40
+    camera.position.x = R * Math.sin(theta * Math.PI / 360) * Math.cos(phi* Math.PI / 360)
+    camera.position.z = R * Math.sin(theta * Math.PI / 360) * Math.sin(phi * Math.PI / 360)
+    camera.position.y = R * Math.cos(theta * Math.PI / 360)
     camera.lookAt origin
     raycaster = projector.pickingRay(mouse2D.clone(), camera) #ray from 2D to 3D
     renderer.render scene, camera
