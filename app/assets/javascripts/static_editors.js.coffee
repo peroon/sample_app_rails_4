@@ -37,7 +37,7 @@ MYTHREE.getRenderer = ->
 
 #平行光源
 MYTHREE.getDirectionalLight = ->
-  light = new THREE.DirectionalLight( 0xffffff, 3 ); 
+  light = new THREE.DirectionalLight( 0xffffff, 1 ); 
   light
 
 #cube
@@ -137,7 +137,7 @@ $ ->
   writeToForm = ->
     console.log("writeToForm")
     $('#voxel_user_id').val(1)
-    $('#voxel_title').val('dummy title')
+    $('#voxel_title').val('ここに作品名を入れてほしいな ^^/')
     $('#voxel_voxeljson').text( JSON.stringify(voxelData) )
 
   resetVoxelAll = ->

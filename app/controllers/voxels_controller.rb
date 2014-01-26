@@ -22,6 +22,14 @@ class VoxelsController < ApplicationController
   def edit
   end
 
+  def random
+    @auto_reload_url = "./random"
+    @auto_rotate = true
+    @method = 'show'
+    @voxel = Voxel.first(:order => "RANDOM()")
+    render :template => "voxels/show"
+  end
+
   # POST /voxels
   # POST /voxels.json
   def create

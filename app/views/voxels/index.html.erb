@@ -1,11 +1,15 @@
+<br>
 <h1>作品一覧</h1>
 
-<table>
+<div class="container">
+
+<table style="align:center;">
   <thead>
     <tr>
-      <th>ユーザ名(User)</th>
-      <th>タイトル(Title)</th>
+      <th>ユーザID(User)</th>
+      <th>作品名(Title)</th>
       <th>データ(Voxeljson)</th>
+      <th>作成日時</th>
       <th></th>
       <th></th>
       <th></th>
@@ -17,9 +21,12 @@
       <tr>
         <td><%= voxel.user_id %></td>
         <td><%= voxel.title %></td>
-        <td><%= voxel.voxeljson %></td>
-        <td><%= link_to '表示', voxel %></td>
+        <td><%= truncate(voxel.voxeljson, :length=>20) %></td>
+        <td><%= voxel.created_at%></td>
+        <td><%= link_to '表示', voxel, :class=>'btn btn-primary' %></td>
+        <%#
         <td><%= link_to '編集', edit_voxel_path(voxel) %></td>
+        <%#
         <td><%= link_to '削除', voxel, method: :delete, data: { confirm: 'Really?' } %></td>
       </tr>
     <% end %>
@@ -29,3 +36,11 @@
 
 <br>
 <%= link_to '新規作成', new_voxel_path, :class=>'btn btn-warning' %>
+<br>
+<br>
+<%= link_to '作品をシャッフル表示', 'random', :class=>'btn btn-success' %>
+<br>
+<br>
+<%= link_to 'モデルを利用したゲーム', 'game', :class=>'btn btn-primary' %>
+
+</div>
