@@ -80,7 +80,12 @@ $ ->
   ROLLOVERED = null
   voxelBase = new THREE.Object3D()
   voxelData = {};
-  
+
+  if $("#auto_rotate").length!=0 
+    auto_rotate = true
+  else
+    auto_rotate = false
+
   init = -> 
     container = document.getElementById('container')
     $container = $(container)
@@ -207,6 +212,8 @@ $ ->
 
   render = ->
     theta += mouse2D.x * 3  if isShiftDown
+    if auto_rotate
+      theta += 1
     camera.position.x = 28 * Math.sin(theta * Math.PI / 360)
     camera.position.z = 28 * Math.cos(theta * Math.PI / 360)
     camera.lookAt origin

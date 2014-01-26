@@ -1,6 +1,15 @@
+<%# リダイレクト %>
 <% if @auto_reload_url then %>
   <META HTTP-EQUIV="Refresh" CONTENT="5; URL=<%= @auto_reload_url %>" />
 <% end %>
+
+<%# JS用変数受け渡し %>
+<div id="variables" style="display: none;">
+  <% if @auto_rotate %>
+    <div id="auto_rotate"></div>
+  <% end %>
+</div>
+
 
 <header class="navbar navbar-fixed-top navbar-inverse">
   <div class="navbar-inner">
