@@ -40,7 +40,7 @@ MYTHREE.getDirectionalLight = ->
   light = new THREE.DirectionalLight( 0xffffff, 1 ); 
   light
 
-#cube
+#cube with wireframe
 MYTHREE.createCube = (pos, color) ->
   console.log color
   geometry = MYTHREE.getCubeGeometry()
@@ -53,6 +53,18 @@ MYTHREE.createCube = (pos, color) ->
   voxel.position.y = pos.y
   voxel.position.z = pos.z
   voxel.matrixAutoUpdate = false
+  voxel.updateMatrix()
+  voxel
+
+#cube
+MYTHREE.createTransparentCube = (pos, color) ->
+  geometry = MYTHREE.getCubeGeometry()
+  material = new THREE.MeshLambertMaterial( { color: color, opacity: 0.5, transparent: true} )
+  voxel = new THREE.Mesh(geometry, material)
+  voxel.position.x = pos.x
+  voxel.position.y = pos.y
+  voxel.position.z = pos.z
+  voxel.matrixAutoUpdate = true
   voxel.updateMatrix()
   voxel
 
@@ -78,6 +90,7 @@ $ ->
   cubeColor = 0xff0000
   mouse3D = null
   raycaster = null
+  rollOverCube = null
   phi = 170
   theta = 70
   isShiftDown = false
@@ -119,6 +132,11 @@ $ ->
     document.addEventListener( 'mousemove', onDocumentMouseMove, false )
     #document.addEventListener( 'mousedown', onDocumentMouseDown, true) #マウスクリック
     $canvas.click(onDocumentMouseDown)
+
+    #rollover cube
+    rollOverCube = MYTHREE.createTransparentCube(new THREE.Vector3(0,0,0), 0xff0000)
+    rollOverCube.is_rollover = true
+    scene.add(rollOverCube)
 
     #disable right click
     $canvas.bind "contextmenu", (e) ->
@@ -239,6 +257,19 @@ $ ->
     requestAnimationFrame animate
     render()
 
+  #rolloverキューブではなく、faceを持っているもの
+  getRealIntersector = (intersects) ->
+    for key,intersector of intersects
+      if intersector.face and intersector.object != rollOverCube
+        return intersector
+    null
+
+  getPosFromIntersector = (intersector) ->
+    intersector.point
+    #if intersector.face
+    #  console.log intersector.face
+    #  intersector.point
+
   render = ->
     phi += mouse2D.x * 3  if isShiftDown
     if auto_rotate
@@ -249,7 +280,15 @@ $ ->
     camera.position.y = R * Math.cos(theta * Math.PI / 360)
     camera.lookAt origin
     raycaster = projector.pickingRay(mouse2D.clone(), camera) #ray from 2D to 3D
+    #rollover pos
+    intersects = raycaster.intersectObjects(scene.children)
+    if intersects.length > 0
+      intersector = getRealIntersector(intersects)
+      if intersector
+        rollOverCube.position = getPosFromIntersector(intersector)
+    #final render
     renderer.render scene, camera
+
 
   #main
   init()
