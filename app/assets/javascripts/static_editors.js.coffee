@@ -42,8 +42,10 @@ MYTHREE.getDirectionalLight = ->
 
 #cube
 MYTHREE.createCube = (pos, color) ->
+  console.log color
   geometry = MYTHREE.getCubeGeometry()
-  material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
+  #material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
+  material = new THREE.MeshLambertMaterial( { color: color} )
   material_edge = new THREE.MeshBasicMaterial( { color: 0x222222, wireframe: true} )
   #voxel = new THREE.Mesh(geometry, material)
   voxel = new THREE.SceneUtils.createMultiMaterialObject( geometry, [material, material_edge])
@@ -73,6 +75,7 @@ $ ->
   plane = null
   mouse2D = null
   oldmouse2D = null
+  cubeColor = 0xff0000
   mouse3D = null
   raycaster = null
   phi = 170
@@ -85,6 +88,8 @@ $ ->
   ROLLOVERED = null
   voxelBase = new THREE.Object3D()
   voxelData = {};
+  $(".color-palette").click ->
+    cubeColor = $(this).attr("data-colorval")
 
   if $("#auto_rotate").length!=0 
     auto_rotate = true
@@ -208,7 +213,7 @@ $ ->
         color = THREE.FaceColors
         voxelData[pos] = color
         #draw to scene
-        voxel = MYTHREE.createCube(voxelPos, '')
+        voxel = MYTHREE.createCube(voxelPos, cubeColor)
         scene.add voxel
         writeToForm()
 
