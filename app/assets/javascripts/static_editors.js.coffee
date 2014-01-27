@@ -4,6 +4,7 @@ window.MYTHREE = window.MYTHREE || {}
 MYTHREE.const = {}
 MYTHREE.const.W = window.innerWidth;
 MYTHREE.const.H = MYTHREE.const.W * (800/1280);
+MYTHREE.cubeColor = 0xff0000
 
 #---ヘルパー---
 
@@ -72,7 +73,7 @@ MYTHREE.getCubeGeometry = ->
   geometry = new THREE.CubeGeometry(1,1,1)
   i = 0
   while i < geometry.faces.length
-    geometry.faces[i].color.setHex 0x00ff80
+    geometry.faces[i].color.setHex MYTHREE.cubeColor
     i++
   geometry
 
@@ -87,7 +88,7 @@ $ ->
   plane = null
   mouse2D = null
   oldmouse2D = null
-  cubeColor = 0xff0000
+  cubeColor = 0x00ff00
   mouse3D = null
   raycaster = null
   rollOverCube = null
@@ -101,8 +102,13 @@ $ ->
   ROLLOVERED = null
   voxelBase = new THREE.Object3D()
   voxelData = {};
+  #色選択時
   $(".color-palette").click ->
-    cubeColor = $(this).attr("data-colorval")
+    colorVal = parseInt($(this).attr("data-colorval"))
+    MYTHREE.cubeColor = colorVal
+    color0xStr = '#' + colorVal.toString(16)
+    $("#selected-color-viewer").css("background-color", color0xStr)
+    console.log rollOverCube.material.color.setHex(colorVal)
 
   if $("#auto_rotate").length!=0 
     auto_rotate = true
@@ -134,7 +140,7 @@ $ ->
     $canvas.click(onDocumentMouseDown)
 
     #rollover cube
-    rollOverCube = MYTHREE.createTransparentCube(new THREE.Vector3(0,0,0), 0xff0000)
+    rollOverCube = MYTHREE.createTransparentCube(new THREE.Vector3(0,0,0), MYTHREE.cubeColor)
     rollOverCube.is_rollover = true
     scene.add(rollOverCube)
 
@@ -203,7 +209,6 @@ $ ->
     for key of voxelData
       color = voxelData[key]
       pos = JSON.parse(key)
-      #voxel
       voxel = MYTHREE.createCube(pos, color)
       voxelBase.add voxel
 
@@ -228,10 +233,9 @@ $ ->
         voxelPos.z = Math.floor(position.z) + 0.5
         #save 
         pos = JSON.stringify(voxelPos)
-        color = THREE.FaceColors
-        voxelData[pos] = color
+        voxelData[pos] = MYTHREE.cubeColor
         #draw to scene
-        voxel = MYTHREE.createCube(voxelPos, cubeColor)
+        voxel = MYTHREE.createCube(voxelPos, MYTHREE.cubeColor)
         scene.add voxel
         writeToForm()
 
