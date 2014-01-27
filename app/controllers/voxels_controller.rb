@@ -4,7 +4,7 @@ class VoxelsController < ApplicationController
   # GET /voxels
   # GET /voxels.json
   def index
-    @voxels = Voxel.all
+    @voxels = Voxel.find(:all, :order => 'created_at DESC')
   end
 
   # GET /voxels/1
