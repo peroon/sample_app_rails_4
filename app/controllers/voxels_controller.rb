@@ -18,7 +18,7 @@ class VoxelsController < ApplicationController
   def view
     @voxel = Voxel.find(params[:id])
     ap @voxel
-    p JSON.pretty_generate(@voxel)
+    @voxel_json = @voxel.as_json
   end 
 
   # GET /voxels/new
