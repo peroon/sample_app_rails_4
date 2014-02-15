@@ -132,7 +132,8 @@ $ ->
     scene.add(axis);
     scene.add(voxelBase)
     renderer = new MYTHREE.getRenderer()
-    container.appendChild(renderer.domElement); #<canvas>
+    if container
+      container.appendChild(renderer.domElement); #<canvas>
     $canvas = $('canvas')
     $canvas.attr('id', 'canvas_id')
     document.addEventListener( 'mousemove', onDocumentMouseMove, false )

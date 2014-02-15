@@ -10,13 +10,15 @@
   <% end %>
 </div>
 
-
 <header class="navbar navbar-fixed-top navbar-inverse">
   <div class="navbar-inner">
     <div class="container">
       
       <%# ロゴ %>
       <%= link_to "voxel editor", root_path, id: "logo" %>
+      <script>
+        $("#logo").lettering();
+      </script>
 
       <nav>
         <ul class="nav pull-right">
