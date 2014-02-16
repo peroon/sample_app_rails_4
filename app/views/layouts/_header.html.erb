@@ -18,6 +18,11 @@
       <%= link_to "voxel editor", root_path, id: "logo" %>
       <script>
         $("#logo").lettering();
+        for(var i=1; i<20; i++){
+          //var random_color = 'pink';
+          var random_color = '#'+Math.floor(Math.random()*16777215).toString(16);
+          $(".char"+i).css('color', random_color);
+        }
       </script>
 
       <nav>
