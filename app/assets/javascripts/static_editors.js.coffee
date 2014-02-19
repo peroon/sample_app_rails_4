@@ -227,7 +227,9 @@ $ ->
         normalMatrix.getNormalMatrix intersect.object.matrixWorld
         normal = intersect.face.normal.clone()
         normal.applyMatrix3(normalMatrix).normalize()
-        position = new THREE.Vector3().addVectors(intersect.point, normal)
+        #position = new THREE.Vector3().addVectors(intersect.point, normal)
+        console.log intersect.point.clone()
+        position = intersect.point.clone()
         voxelPos = {}
         voxelPos.x = Math.floor(position.x) + 0.5
         voxelPos.y = Math.floor(position.y) + 0.5
