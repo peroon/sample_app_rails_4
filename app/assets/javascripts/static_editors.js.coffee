@@ -98,6 +98,7 @@ $ ->
   isCtrlDown = false
   isRightClickDown = false
   origin = new THREE.Vector3( 0, 0, 0 )
+  voxelPos = {}
   normalMatrix = new THREE.Matrix3()
   ROLLOVERED = null
   voxelBase = new THREE.Object3D()
@@ -162,35 +163,6 @@ $ ->
     if($("#method").text()=="show")
       initShow()
 
-  onDocumentMouseMove = ( event ) ->
-    event.preventDefault()
-    #マウス位置補正
-    offsetY = $("#header").height() + $("header").height() 
-    #ブラウザの左上からのピクセル位置 = event.clientX,Y
-    canvasX = event.clientX
-    canvasY = event.clientY - offsetY
-    mouse2D.x = ( canvasX / MYTHREE.const.W ) * 2 - 1 #-1~+1
-    mouse2D.y = - ( canvasY / MYTHREE.const.H ) * 2 + 1 #-1~+1
-    intersects = raycaster.intersectObjects( scene.children )
-    #ray hit color
-    #if intersects.length > 0
-    #  ROLLOVERED = getColoredIntersect(intersects)
-    #  ROLLOVERED.color.setHex( 0xff8000 )
-    #右クリック&ドラッグで回転
-    if isRightClickDown
-      diffX = (oldmouse2D.x - mouse2D.x) * 200 * -1
-      phi += diffX
-      diffY = (oldmouse2D.y - mouse2D.y) * 200 * -1
-      theta += diffY
-    oldmouse2D.x = mouse2D.x
-    oldmouse2D.y = mouse2D.y
-  
-  #複数の交差点からfaceがセットされているものを返す
-  getFacedIntersect = (intersects) ->
-    for intersect in intersects
-      if intersect.face?
-        return intersect
-
   initShow = ->
     voxelData = JSON.parse($("#voxeljson_text").text())
     redrawVoxelAll()
@@ -213,27 +185,63 @@ $ ->
       voxel = MYTHREE.createCube(pos, color)
       voxelBase.add voxel
 
-  onDocumentMouseDown = (event) ->
+  onDocumentMouseMove = ( event ) ->
     event.preventDefault()
+    #マウス位置補正
+    offsetY = $("#header").height() + $("header").height() 
+    #ブラウザの左上からのピクセル位置 = event.clientX,Y
+    canvasX = event.clientX
+    canvasY = event.clientY - offsetY
+    mouse2D.x = ( canvasX / MYTHREE.const.W ) * 2 - 1 #-1~+1
+    mouse2D.y = - ( canvasY / MYTHREE.const.H ) * 2 + 1 #-1~+1
+    intersects = raycaster.intersectObjects( scene.children )
+    #ray hit color
+    #if intersects.length > 0
+    #  ROLLOVERED = getColoredIntersect(intersects)
+    #  ROLLOVERED.color.setHex( 0xff8000 )
+    #右クリック&ドラッグで回転
+    if isRightClickDown
+      diffX = (oldmouse2D.x - mouse2D.x) * 200 * -1
+      phi += diffX
+      diffY = (oldmouse2D.y - mouse2D.y) * 200 * -1
+      theta += diffY
+    oldmouse2D.x = mouse2D.x
+    oldmouse2D.y = mouse2D.y
+    #キューブ配置位置
     intersects = raycaster.intersectObjects(scene.children)
+    intersects = faceIntersectOnly(intersects)
+
     if intersects.length > 0
-      #レイとの交差点
-      intersect = getFacedIntersect(intersects)
-      if isCtrlDown
-        #remove voxel from scene
-        scene.remove intersect.object unless intersect.object is plane
-      else
-        #交差点から描画位置決定
+      intersect = getRealIntersect(intersects)
+      #交差点から描画位置決定
+      if intersect.object
         normalMatrix.getNormalMatrix intersect.object.matrixWorld
         normal = intersect.face.normal.clone()
         normal.applyMatrix3(normalMatrix).normalize()
         #position = new THREE.Vector3().addVectors(intersect.point, normal)
-        console.log intersect.point.clone()
         position = intersect.point.clone()
         voxelPos = {}
         voxelPos.x = Math.floor(position.x) + 0.5
         voxelPos.y = Math.floor(position.y) + 0.5
         voxelPos.z = Math.floor(position.z) + 0.5
+
+  faceIntersectOnly = (intersects) ->
+    _arr = []
+    for key,intersect of intersects
+      if intersect.object instanceof THREE.Mesh
+        _arr.push(intersect)
+    _arr
+
+  onDocumentMouseDown = (event) ->
+    event.preventDefault()
+    intersects = raycaster.intersectObjects(scene.children)
+    if intersects.length > 0
+      #レイとの交差点
+      intersect = getRealIntersect(intersects)
+      if isCtrlDown
+        #remove voxel from scene
+        scene.remove intersect.object unless intersect.object is plane
+      else
         #save 
         pos = JSON.stringify(voxelPos)
         voxelData[pos] = MYTHREE.cubeColor
@@ -241,6 +249,13 @@ $ ->
         voxel = MYTHREE.createCube(voxelPos, MYTHREE.cubeColor)
         scene.add voxel
         writeToForm()
+
+  #複数の交差点からfaceがセットされているものを返す
+  getRealIntersect = (intersects) ->
+    console.log intersects
+    for intersect in intersects
+      if intersect.face? && !intersect.is_rollover
+        return intersect
 
   onDocumentKeyDown = (event) ->
     switch event.keyCode
@@ -271,12 +286,6 @@ $ ->
         return intersector
     null
 
-  getPosFromIntersector = (intersector) ->
-    intersector.point
-    #if intersector.face
-    #  console.log intersector.face
-    #  intersector.point
-
   render = ->
     phi += mouse2D.x * 3  if isShiftDown
     if auto_rotate
@@ -292,7 +301,9 @@ $ ->
     if intersects.length > 0
       intersector = getRealIntersector(intersects)
       if intersector
-        rollOverCube.position = getPosFromIntersector(intersector)
+        rollOverCube.position.x = voxelPos.x
+        rollOverCube.position.y = voxelPos.y
+        rollOverCube.position.z = voxelPos.z
     #final render
     renderer.render scene, camera
 
