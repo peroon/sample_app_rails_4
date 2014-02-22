@@ -252,9 +252,8 @@ $ ->
 
   #複数の交差点からfaceがセットされているものを返す
   getRealIntersect = (intersects) ->
-    console.log intersects
     for intersect in intersects
-      if intersect.face? && !intersect.is_rollover
+      if intersect.face? && intersect.object.is_rollover==undefined
         return intersect
 
   onDocumentKeyDown = (event) ->
@@ -282,7 +281,7 @@ $ ->
   #rolloverキューブではなく、faceを持っているもの
   getRealIntersector = (intersects) ->
     for key,intersector of intersects
-      if intersector.face and intersector.object != rollOverCube
+      if intersector.face && intersector.object.id != rollOverCube.id
         return intersector
     null
 
