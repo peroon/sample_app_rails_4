@@ -209,6 +209,7 @@ $ ->
     oldmouse2D.y = mouse2D.y
     #キューブ配置位置
     intersects = raycaster.intersectObjects(scene.children)
+    #ロールオーバーキューブ含む
     intersects = faceIntersectOnly(intersects)
 
     if intersects.length > 0
@@ -223,6 +224,9 @@ $ ->
         voxelPos = {}
         voxelPos.x = Math.floor(position.x) + 0.5
         voxelPos.y = Math.floor(position.y) + 0.5
+        #荒治療(TODO)  
+        if voxelPos.y < 0
+          voxelPos.y += 1.0
         voxelPos.z = Math.floor(position.z) + 0.5
 
   faceIntersectOnly = (intersects) ->
