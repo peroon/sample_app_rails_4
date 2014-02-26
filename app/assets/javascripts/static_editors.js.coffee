@@ -110,9 +110,10 @@ $ ->
     offsetY = $("#header").height() + $("header").height() 
     #ブラウザの左上からのピクセル位置 = event.clientX,Y
     canvasX = event.clientX
-    canvasY = event.clientY - offsetY
+    canvasY = event.clientY - offsetY - 10
     mouse2D.x = ( canvasX / MYTHREE.const.W ) * 2 - 1 #-1~+1
     mouse2D.y = - ( canvasY / MYTHREE.const.H ) * 2 + 1 #-1~+1
+    console.log 'mouse', mouse2D
     #ray hit color
     #if intersects.length > 0
     #  ROLLOVERED = getColoredIntersect(intersects)
