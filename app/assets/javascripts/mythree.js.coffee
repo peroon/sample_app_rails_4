@@ -43,7 +43,6 @@ MYTHREE.getDirectionalLight = ->
 
 #cube with wireframe
 MYTHREE.createCube = (pos, color) ->
-  console.log color
   geometry = MYTHREE.getCubeGeometry()
   #material = new THREE.MeshLambertMaterial(vertexColors: THREE.FaceColors)
   material = new THREE.MeshLambertMaterial( { color: color} )

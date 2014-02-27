@@ -29,7 +29,6 @@ $ ->
     MYTHREE.cubeColor = colorVal
     color0xStr = '#' + colorVal.toString(16)
     $("#selected-color-viewer").css("background-color", color0xStr)
-    console.log rollOverCube.material.color.setHex(colorVal)
 
   if $("#auto_rotate").length!=0 
     auto_rotate = true
@@ -113,7 +112,6 @@ $ ->
     canvasY = event.clientY - offsetY - 10
     mouse2D.x = ( canvasX / MYTHREE.const.W ) * 2 - 1 #-1~+1
     mouse2D.y = - ( canvasY / MYTHREE.const.H ) * 2 + 1 #-1~+1
-    console.log 'mouse', mouse2D
     #ray hit color
     #if intersects.length > 0
     #  ROLLOVERED = getColoredIntersect(intersects)
@@ -127,12 +125,11 @@ $ ->
     oldmouse2D.x = mouse2D.x
     oldmouse2D.y = mouse2D.y
     #キューブ配置位置
-    intersects = raycaster.intersectObjects(scene.children)
+    intersects = raycaster.intersectObjects(scene.children, true)
     #ロールオーバーキューブ含む
     intersects = faceIntersectOnly(intersects)
 
     if intersects.length > 0
-      console.log 'intersects.length', intersects.length
       intersect = getRealIntersect(intersects)
       #交差点から描画位置決定
       if intersect.object
@@ -148,7 +145,6 @@ $ ->
         if voxelPos.y < 0
           voxelPos.y += 1.0
         voxelPos.z = Math.floor(position.z) + 0.5
-        console.log 'voxelPos', voxelPos.x, voxelPos.y, voxelPos.z
 
   faceIntersectOnly = (intersects) ->
     _arr = []
