@@ -22,7 +22,8 @@ $ ->
   normalMatrix = new THREE.Matrix3()
   ROLLOVERED = null
   voxelBase = new THREE.Object3D()
-  voxelData = {};
+  voxelData = {}
+  cameraR = 40
   #色選択時
   $(".color-palette").click ->
     colorVal = parseInt($(this).attr("data-colorval"))
@@ -58,6 +59,10 @@ $ ->
     $canvas.attr('id', 'canvas_id')
     document.addEventListener( 'mousemove', onDocumentMouseMove, false )
     $canvas.click(onDocumentMouseDown)
+    #マウスホイール
+    if window.addEventListener
+      window.addEventListener "DOMMouseScroll", onMouseWheel, false #Mozilla
+      window.onmousewheel = document.onmousewheel = onMouseWheel #IE,Opera,Chrome
 
     #rollover cube
     rollOverCube = MYTHREE.createTransparentCube(new THREE.Vector3(0,0,0), MYTHREE.cubeColor)
@@ -206,14 +211,50 @@ $ ->
         return intersector
     null
 
+  #マウスホイール
+  mouseWheelHandler = (delta) ->
+    magnifySpeed = 1
+    if delta < 0
+      cameraR += magnifySpeed
+    else
+      cameraR -= magnifySpeed
+    return
+  onMouseWheel = (event) ->
+    delta = 0
+    # For IE. 
+    event = window.event  unless event
+    if event.wheelDelta # IE/Opera.
+      delta = event.wheelDelta / 120
+      ###
+      Mozilla case.
+      In Mozilla, sign of delta is different than in IE.
+      Also, delta is multiple of 3.
+      ###
+    else 
+      delta = -event.detail / 3  if event.detail
+      ###
+      If delta is nonzero, handle it.
+      Basically, delta is now positive if wheel was scrolled up,
+      and negative, if wheel was scrolled down.
+      ###
+    mouseWheelHandler delta  if delta
+    ###
+    Prevent default actions caused by mouse wheel.
+    That might be ugly, but we handle scrolls somehow
+    anyway, so don't bother here..
+    ###
+    event.preventDefault()  if event.preventDefault
+    event.returnValue = false
+    return
+
   render = ->
     phi += mouse2D.x * 3  if isShiftDown
     if auto_rotate
       phi += 1
     R = 40
-    camera.position.x = R * Math.sin(theta * Math.PI / 360) * Math.cos(phi* Math.PI / 360)
-    camera.position.z = R * Math.sin(theta * Math.PI / 360) * Math.sin(phi * Math.PI / 360)
-    camera.position.y = R * Math.cos(theta * Math.PI / 360)
+    camera.position.x = cameraR * Math.sin(theta * Math.PI / 360) * Math.cos(phi* Math.PI / 360)
+    camera.position.z = cameraR * Math.sin(theta * Math.PI / 360) * Math.sin(phi * Math.PI / 360)
+    camera.position.y = cameraR * Math.cos(theta * Math.PI / 360)
     camera.lookAt origin
     raycaster = projector.pickingRay(mouse2D.clone(), camera) #ray from 2D to 3D
     #rollover pos
