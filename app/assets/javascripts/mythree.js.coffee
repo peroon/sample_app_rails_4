@@ -41,15 +41,22 @@ MYTHREE.getDirectionalLight = ->
   light = new THREE.DirectionalLight( 0xffffff, 1 ); 
   light
 
-#cube with wireframe
+#キューブ作成
 MYTHREE.createCube = (pos, color) ->
   console.log 'col'
   console.log color
   texture_path = "../assets/cube_texture.png"
-  material = new THREE.MeshLambertMaterial( { color: color, ambient: 0x00ff00, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( texture_path ) } )
-  #material = new THREE.MeshLambertMaterial()
-  material.ambient = material.color
-  material.ambient = 0xff0000
+  param = 
+    wireframe: false
+    color: color
+    #ambient: color
+    shading: THREE.FlatShading
+    #map: THREE.ImageUtils.loadTexture( texture_path )
+  #material = new THREE.MeshLambertMaterial( param )
+  material = new THREE.MeshPhongMaterial( param )
+  #material.ambient = material.color
+  #material.ambient = 0xff0000
+  #material.color = 0xff0000
   geometry = new THREE.CubeGeometry(1, 1, 1)
   voxel = new THREE.Mesh(geometry, material)
   #ワイヤフレーム表示
