@@ -6,25 +6,26 @@
 <style>
 div.example {
   position: absolute;
-  top: 200px;
+  top: 300px;
   left: 50px;
-  background-color: yellow;
+  background-color: rgba(255,255,0,0.5);
+  width:400px;
+  height:150px;
 }
 </style>
 <div class="example">
-  AAA<br>
-  AAA<br>
-  AAA<br>
-  AAA<br>
-  <a href="#">
-    AAA<br>
-  </a>
+  <div style="height:30;">
+    <input type="checkbox" id="my-checkbox" checked><br>
+  </div>
 </div>
+<script>
+  $().ready(function(){
+    $("#my-checkbox").bootstrapSwitch();
+  });
+</script>
 
 <div id="container">
 </div>
-
-
 
 <%= render 'static_editors/footer' %>
 
