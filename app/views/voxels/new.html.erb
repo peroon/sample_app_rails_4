@@ -25,6 +25,11 @@ div.example {
 <script>
   $().ready(function(){
     $("#my-checkbox1").bootstrapSwitch();
+    $("#my-checkbox1").on('switchChange', function (e, data) {
+      var $element = $(data.el),
+      value = data.value;
+      console.log(e, $element, value);
+    });
     $("#my-checkbox2").bootstrapSwitch();
   });
 </script>
