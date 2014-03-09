@@ -159,6 +159,7 @@ $ ->
     _arr
 
   onDocumentMouseDown = (event) ->
+    console.log g['is_mode_mirror']
     event.preventDefault()
     intersects = raycaster.intersectObjects(scene.children)
     if intersects.length > 0
