@@ -27,5 +27,5 @@ SampleApp::Application.routes.draw do
   match '/random', to: 'voxels#random', via: 'get'
   match '/voxels/view/:id', to: 'voxels#view', via: 'get'
 
-  match '/test', :to => redirect('/test.html')
+  #match '/test', :to => redirect('/test.html')
 end
